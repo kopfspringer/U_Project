@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public List<CharacterController> playerTeam = new List<CharacterController>();
     public List<CharacterController> enemyTeam = new List<CharacterController>();
 
+    public int turnCounter = 0;
     private int currentCharIndex;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -125,5 +126,9 @@ public class GameManager : MonoBehaviour
             int index = Random.Range(0, possibleMoves.Count);
             activePlayer.MoveToPoint(possibleMoves[index].transform.position);
         }
+    }
+    public void OnPlayerMoveComplete()
+    {
+        turnCounter++;
     }
 }

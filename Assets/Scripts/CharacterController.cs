@@ -13,18 +13,26 @@ public class CharacterController : MonoBehaviour
 
     public bool isEnemy;
 
+    private bool playerMovePending;
+    private int lastTurnProcessed;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         moveTarget = transform.position;
+        if (isEnemy)
+        {
+            lastTurnProcessed = GameManager.instance.turnCounter;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isEnemy && Vector3.Distance(transform.position, moveTarget) < 0.01f)
+        if (isEnemy && Vector3.Distance(transform.position, moveTarget) < 0.01f && lastTurnProcessed < GameManager.instance.turnCounter)
         {
             MoveTowardsPlayer();
+            lastTurnProcessed = GameManager.instance.turnCounter;
         }
 
         //moving to a point
@@ -38,10 +46,11 @@ public class CharacterController : MonoBehaviour
                 CameraController.instance.SetMoveTarget(transform.position);
             }
         }
-        else if (isMoving)
+
+        if (!isEnemy && playerMovePending && Vector3.Distance(transform.position, moveTarget) < 0.01f)
         {
-            isMoving = false;
-            GameManager.instance.CharacterFinishedMove(this);
+            GameManager.instance.OnPlayerMoveComplete();
+            playerMovePending = false;
         }
     }
 
@@ -90,7 +99,11 @@ public class CharacterController : MonoBehaviour
     public void MoveToPoint(Vector3 pointToMoveTo)
     {
         moveTarget = pointToMoveTo;
-        isMoving = true;
+        if (!isEnemy)
+        {
+            playerMovePending = true;
+            isMoving = true;
+        }
     }
 
     private void OnMouseDown()
