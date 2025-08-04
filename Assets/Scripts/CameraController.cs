@@ -11,7 +11,6 @@ public class CameraController : MonoBehaviour
     }
 
     public float moveSpeed;
-    public float dragSpeed;
     private Vector3 moveTarget;
     public float dragSpeed = 0.1f;
     private Vector3 lastMousePosition;

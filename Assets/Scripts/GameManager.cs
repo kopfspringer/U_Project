@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
         {
             if (!cc.isEnemy)
             {
-                BattleMenu.instance.Show();
+                BattleMenu.instance?.Show();
             }
             else
             {
