@@ -470,6 +470,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activePlayer: {fileID: 401873237}
+  allChars: []
+  playerTeam: []
+  enemyTeam: []
+  turnCounter: 0
 --- !u!114 &401873237 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 317082932680747307, guid: 0176f24556d995941adecd719493e90d, type: 3}
@@ -1191,6 +1195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 20
+  dragSpeed: 0.1
 --- !u!1001 &1621383729
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1887,6 +1892,14 @@ PrefabInstance:
     - target: {fileID: 1753351534329448182, guid: 015c05fb756460c48abee3ee74fd9055, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1773221376351154656, guid: 015c05fb756460c48abee3ee74fd9055, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4474563114361813509, guid: 015c05fb756460c48abee3ee74fd9055, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8144487759797271483, guid: 015c05fb756460c48abee3ee74fd9055, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
