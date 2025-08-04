@@ -22,7 +22,10 @@ public class CharacterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //transform.position = transform.position + new Vector3(moveSpeed * Time.deltaTime, 0f, 0f);
+        if (isEnemy && Vector3.Distance(transform.position, moveTarget) < 0.01f)
+        {
+            MoveTowardsPlayer();
+        }
 
         //moving to a point
         if (transform.position != moveTarget)
@@ -39,6 +42,48 @@ public class CharacterController : MonoBehaviour
         {
             isMoving = false;
             GameManager.instance.CharacterFinishedMove(this);
+        }
+    }
+
+    private void MoveTowardsPlayer()
+    {
+        if (GameManager.instance.playerTeam.Count == 0)
+        {
+            return;
+        }
+
+        Vector3 playerPos = GameManager.instance.playerTeam[0].transform.position;
+        Vector3 diff = playerPos - transform.position;
+        Vector3 step = Vector3.zero;
+
+        if (Mathf.Abs(diff.x) > Mathf.Abs(diff.z))
+        {
+            step = new Vector3(Mathf.Sign(diff.x), 0f, 0f);
+        }
+        else if (diff.z != 0f)
+        {
+            step = new Vector3(0f, 0f, Mathf.Sign(diff.z));
+        }
+
+        Vector3 newTarget = transform.position + step;
+
+        if (newTarget == playerPos)
+        {
+            if (step.x != 0f && diff.z != 0f)
+            {
+                step = new Vector3(0f, 0f, Mathf.Sign(diff.z));
+                newTarget = transform.position + step;
+            }
+            else if (step.z != 0f && diff.x != 0f)
+            {
+                step = new Vector3(Mathf.Sign(diff.x), 0f, 0f);
+                newTarget = transform.position + step;
+            }
+        }
+
+        if (newTarget != playerPos && step != Vector3.zero)
+        {
+            moveTarget = newTarget;
         }
     }
 
