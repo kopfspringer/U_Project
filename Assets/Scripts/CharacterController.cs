@@ -34,10 +34,20 @@ public class CharacterController : MonoBehaviour
                 CameraController.instance.SetMoveTarget(transform.position);
             }
         }
+        else if (isMoving)
+        {
+            isMoving = false;
+
+            if (GameManager.instance.activePlayer == this)
+            {
+                GameManager.instance.NextTurn();
+            }
+        }
     }
 
     public void MoveToPoint(Vector3 pointToMoveTo)
     {
         moveTarget = pointToMoveTo;
+        isMoving = true;
     }
 }

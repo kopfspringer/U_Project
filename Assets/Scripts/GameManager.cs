@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +15,8 @@ public class GameManager : MonoBehaviour
     public List<CharacterController> allChars = new List<CharacterController>();
     public List<CharacterController> playerTeam = new List<CharacterController>();
     public List<CharacterController> enemyTeam = new List<CharacterController>();
+
+    private int currentCharIndex;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,6 +40,24 @@ public class GameManager : MonoBehaviour
         allChars.AddRange(playerTeam);
         allChars.AddRange(enemyTeam);
 
+        currentCharIndex = 0;
+        if(allChars.Count > 0)
+        {
+            activePlayer = allChars[currentCharIndex];
+            CameraController.instance.SetMoveTarget(activePlayer.transform.position);
+        }
+    }
+
+    public void NextTurn()
+    {
+        currentCharIndex++;
+        if (currentCharIndex >= allChars.Count)
+        {
+            currentCharIndex = 0;
+        }
+
+        activePlayer = allChars[currentCharIndex];
+        CameraController.instance.SetMoveTarget(activePlayer.transform.position);
     }
 
     // Update is called once per frame
