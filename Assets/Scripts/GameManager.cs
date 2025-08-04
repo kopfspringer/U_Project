@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,14 +17,16 @@ public class GameManager : MonoBehaviour
     public List<CharacterController> playerTeam = new List<CharacterController>();
     public List<CharacterController> enemyTeam = new List<CharacterController>();
 
+    private int currentCharIndex;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         allChars.AddRange(FindObjectsByType<CharacterController>(FindObjectsSortMode.None));
 
-        foreach(CharacterController cc in allChars)
+        foreach (CharacterController cc in allChars)
         {
-            if(cc.isEnemy == false)
+            if (cc.isEnemy == false)
             {
                 playerTeam.Add(cc);
             }
@@ -39,11 +41,69 @@ public class GameManager : MonoBehaviour
         allChars.AddRange(playerTeam);
         allChars.AddRange(enemyTeam);
 
+        currentCharIndex = 0;
+        if (allChars.Count > 0)
+        {
+            activePlayer = allChars[currentCharIndex];
+
+            if (activePlayer.isEnemy)
+            {
+                StartCoroutine(EnemyTurn());
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SelectCharacter(CharacterController cc)
     {
+        if (cc == activePlayer && !cc.isEnemy)
+        {
+            MoveGrid.instance.ShowMovePointsAround(cc.transform.position, 5);
+        }
+    }
 
+    public void MoveActivePlayerToPoint(Vector3 point)
+    {
+        if (activePlayer != null && !activePlayer.isEnemy)
+        {
+            activePlayer.MoveToPoint(point);
+            MoveGrid.instance.HideMovePoints();
+        }
+    }
+
+    public void CharacterFinishedMove(CharacterController cc)
+    {
+        if (cc == activePlayer)
+        {
+            EndTurn();
+        }
+    }
+
+    private void EndTurn()
+    {
+        currentCharIndex++;
+        if (currentCharIndex >= allChars.Count)
+        {
+            currentCharIndex = 0;
+        }
+
+        activePlayer = allChars[currentCharIndex];
+
+        if (activePlayer.isEnemy)
+        {
+            StartCoroutine(EnemyTurn());
+        }
+    }
+
+    private IEnumerator EnemyTurn()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        List<MovePoint> possibleMoves = MoveGrid.instance.GetPointsInRange(activePlayer.transform.position, 5);
+
+        if (possibleMoves.Count > 0)
+        {
+            int index = Random.Range(0, possibleMoves.Count);
+            activePlayer.MoveToPoint(possibleMoves[index].transform.position);
+        }
     }
 }

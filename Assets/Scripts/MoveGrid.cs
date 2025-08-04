@@ -1,24 +1,24 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MoveGrid : MonoBehaviour
 {
+    public static MoveGrid instance;
 
     public MovePoint startPoint;
-
     public Vector2Int spawnRange;
-
     public LayerMask whatIsGround;
-
     public LayerMask whatIsObstacle;
-
     public float obstacleCheckRange;
 
     public List<MovePoint> allMovePoints = new List<MovePoint>();
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         Scene currentScene = SceneManager.GetActiveScene();
@@ -28,17 +28,15 @@ public class MoveGrid : MonoBehaviour
             GenerateMoveGrid();
         }
 
-        if(sceneName == "IntroScene")
+        if (sceneName == "IntroScene")
         {
             OpenMenu.instance.HideMenus();
         }
         //HideMovePoints();
     }
 
-    // Update is called once per frame
     void Update()
     {
-
     }
 
     public void GenerateMoveGrid()
@@ -47,7 +45,6 @@ public class MoveGrid : MonoBehaviour
         {
             for (int y = -spawnRange.y; y <= spawnRange.y; y++)
             {
-                // Prüfe ob Untergrund existiert, wenn ja mache MovePoint
                 RaycastHit hit;
 
                 if (Physics.Raycast(transform.position + new Vector3(x, 10f, y), Vector3.down, out hit, 20f, whatIsGround))
@@ -55,7 +52,7 @@ public class MoveGrid : MonoBehaviour
                     if (Physics.OverlapSphere(hit.point, obstacleCheckRange, whatIsObstacle).Length == 0)
                     {
                         MovePoint newPoint = Instantiate(startPoint, hit.point, transform.rotation);
-                        newPoint.transform.SetParent(transform); //MovePoints childs of movementGrid
+                        newPoint.transform.SetParent(transform);
 
                         allMovePoints.Add(newPoint);
                     }
@@ -67,15 +64,37 @@ public class MoveGrid : MonoBehaviour
 
     public void HideMovePoints()
     {
-        /*
-        for (int i = 0; i < allMovePoints.Count; i++)
-        {
-            allMovePoints[i].gameObject.SetActive(false);
-        }
-        */
         foreach (MovePoint movePoint in allMovePoints)
         {
             movePoint.gameObject.SetActive(false);
         }
     }
+
+    public List<MovePoint> GetPointsInRange(Vector3 center, int range)
+    {
+        List<MovePoint> pointsInRange = new List<MovePoint>();
+
+        foreach (MovePoint movePoint in allMovePoints)
+        {
+            if (Vector3.Distance(center, movePoint.transform.position) <= range)
+            {
+                pointsInRange.Add(movePoint);
+            }
+        }
+
+        return pointsInRange;
+    }
+
+    public void ShowMovePointsAround(Vector3 center, int range)
+    {
+        HideMovePoints();
+
+        List<MovePoint> pointsToShow = GetPointsInRange(center, range);
+
+        foreach (MovePoint movePoint in pointsToShow)
+        {
+            movePoint.gameObject.SetActive(true);
+        }
+    }
 }
+

@@ -27,6 +27,7 @@ public class CharacterController : MonoBehaviour
         //moving to a point
         if (transform.position != moveTarget)
         {
+            isMoving = true;
             transform.position = Vector3.MoveTowards(transform.position, moveTarget, moveSpeed * Time.deltaTime);
 
             if (GameManager.instance.activePlayer == this)
@@ -34,10 +35,24 @@ public class CharacterController : MonoBehaviour
                 CameraController.instance.SetMoveTarget(transform.position);
             }
         }
+        else if (isMoving)
+        {
+            isMoving = false;
+            GameManager.instance.CharacterFinishedMove(this);
+        }
     }
 
     public void MoveToPoint(Vector3 pointToMoveTo)
     {
         moveTarget = pointToMoveTo;
+        isMoving = true;
+    }
+
+    private void OnMouseDown()
+    {
+        if (!isEnemy)
+        {
+            GameManager.instance.SelectCharacter(this);
+        }
     }
 }
