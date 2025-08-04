@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using TMPro;
 
 public class CharacterController : MonoBehaviour
 {
@@ -13,10 +14,23 @@ public class CharacterController : MonoBehaviour
 
     public bool isEnemy;
 
+    public int hitPoints = 100;
+    private TextMeshPro hpText;
+    public Vector3 hpOffset = new Vector3(0f, 2f, 0f);
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         moveTarget = transform.position;
+
+        GameObject hpObj = new GameObject("HPDisplay");
+        hpObj.transform.SetParent(transform);
+        hpObj.transform.localPosition = hpOffset;
+        hpText = hpObj.AddComponent<TextMeshPro>();
+        hpText.alignment = TextAlignmentOptions.Center;
+        hpText.fontSize = 3f;
+        hpText.color = Color.red;
+        hpText.text = hitPoints.ToString();
     }
 
     // Update is called once per frame
@@ -33,6 +47,11 @@ public class CharacterController : MonoBehaviour
             {
                 CameraController.instance.SetMoveTarget(transform.position);
             }
+        }
+
+        if (hpText != null)
+        {
+            hpText.text = hitPoints.ToString();
         }
     }
 
