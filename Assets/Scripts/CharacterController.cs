@@ -134,6 +134,13 @@ public class CharacterController : MonoBehaviour
                 Vector3 dir = hpText.transform.position - camPos;
                // hpText.transform.rotation = Quaternion.LookRotation(dir);
                 //hpText.transform.rotation *= Quaternion.Euler(0f, 90f, 0f);
+        else if (isMoving)
+        {
+            isMoving = false;
+
+            if (GameManager.instance.activePlayer == this)
+            {
+                ActionMenu.instance.ShowMenu();
             }
         }
     }
@@ -153,6 +160,17 @@ public class CharacterController : MonoBehaviour
         if (!isEnemy)
         {
             GameManager.instance.SelectCharacter(this);
+        isMoving = true;
+        ActionMenu.instance.HideMenu();
+    }
+
+    public void TakeDamage(int amount)
+    {
+        hitPoints -= amount;
+
+        if (hitPoints < 0)
+        {
+            hitPoints = 0;
         }
     }
 }
