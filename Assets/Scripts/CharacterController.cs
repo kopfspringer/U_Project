@@ -30,6 +30,7 @@ public class CharacterController : MonoBehaviour
         hpText.alignment = TextAlignmentOptions.Center;
         hpText.fontSize = 3f;
         hpText.color = Color.red;
+        hpText.font = TMP_Settings.defaultFontAsset;
         hpText.text = hitPoints.ToString();
     }
 
