@@ -64,6 +64,11 @@ public class CharacterController : MonoBehaviour
         if (hpText != null)
         {
             hpText.text = hitPoints.ToString();
+            if (Camera.main != null)
+            {
+                hpText.transform.LookAt(Camera.main.transform);
+                hpText.transform.Rotate(0f, 180f, 0f);
+            }
         }
     }
 
