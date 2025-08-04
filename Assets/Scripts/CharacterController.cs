@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using TMPro;
 
 public class CharacterController : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class CharacterController : MonoBehaviour
 
     public bool isEnemy;
 
+    public int hitPoints = 100;
+    private TextMeshPro hpText;
+    public Vector3 hpOffset = new Vector3(0f, 2f, 0f);
     private bool playerMovePending;
     private int lastTurnProcessed;
 
@@ -20,6 +24,15 @@ public class CharacterController : MonoBehaviour
     void Start()
     {
         moveTarget = transform.position;
+
+        GameObject hpObj = new GameObject("HPDisplay");
+        hpObj.transform.SetParent(transform);
+        hpObj.transform.localPosition = hpOffset;
+        hpText = hpObj.AddComponent<TextMeshPro>();
+        hpText.alignment = TextAlignmentOptions.Center;
+        hpText.fontSize = 3f;
+        hpText.color = Color.red;
+        hpText.text = hitPoints.ToString();
         if (isEnemy)
         {
             lastTurnProcessed = GameManager.instance.turnCounter;
@@ -93,6 +106,10 @@ public class CharacterController : MonoBehaviour
         if (newTarget != playerPos && step != Vector3.zero)
         {
             moveTarget = newTarget;
+            if (hpText != null)
+            {
+                hpText.text = hitPoints.ToString();
+            }
         }
     }
 
