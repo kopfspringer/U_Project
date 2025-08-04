@@ -32,7 +32,7 @@ public class MoveGrid : MonoBehaviour
         {
             OpenMenu.instance.HideMenus();
         }
-        //HideMovePoints();
+        HideMovePoints();
     }
 
     void Update()

@@ -77,7 +77,15 @@ public class GameManager : MonoBehaviour
         {
             if (!cc.isEnemy)
             {
-                BattleMenu.instance?.Show();
+                if (BattleMenu.instance != null)
+                {
+                    BattleMenu.instance?.Show();
+                }
+                else
+                {
+                    EndTurn();
+                }
+               
             }
             else
             {

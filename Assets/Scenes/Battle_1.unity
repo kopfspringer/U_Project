@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startPoint: {fileID: 1750726302}
-  spawnRange: {x: 10, y: 10}
+  spawnRange: {x: 5, y: 5}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
@@ -388,6 +388,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activePlayer: {fileID: 401873237}
+  allChars: []
+  playerTeam: []
+  enemyTeam: []
 --- !u!114 &401873237 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 317082932680747307, guid: 0176f24556d995941adecd719493e90d, type: 3}
@@ -556,6 +559,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 20
+  dragSpeed: 0.1
 --- !u!4 &530867919
 Transform:
   m_ObjectHideFlags: 0
