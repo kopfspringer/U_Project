@@ -75,12 +75,21 @@ public class GameManager : MonoBehaviour
     {
         if (cc == activePlayer)
         {
-            EndTurn();
+            if (!cc.isEnemy)
+            {
+                BattleMenu.instance.Show();
+            }
+            else
+            {
+                EndTurn();
+            }
         }
     }
 
-    private void EndTurn()
+    public void EndTurn()
     {
+        BattleMenu.instance?.Hide();
+
         currentCharIndex++;
         if (currentCharIndex >= allChars.Count)
         {
