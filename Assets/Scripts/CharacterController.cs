@@ -137,6 +137,15 @@ public class CharacterController : MonoBehaviour
                 {
                     ActionMenu.instance.ShowMenu();
                 }
+                else if (isMoving)
+                {
+                    isMoving = false;
+
+                    if (GameManager.instance.activePlayer == this)
+                    {
+                        ActionMenu.instance.ShowMenu();
+                    }
+                }
             }
         }
     }
@@ -159,6 +168,8 @@ public class CharacterController : MonoBehaviour
             isMoving = true;
             ActionMenu.instance.HideMenu();
         }
+        isMoving = true;
+        ActionMenu.instance.HideMenu();
     }
 
     public void TakeDamage(int amount)

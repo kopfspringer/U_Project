@@ -53,6 +53,16 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(EnemyTurn());
             }
         }
+        if (activePlayer == null && playerTeam.Count > 0)
+        {
+            activePlayer = playerTeam[0];
+        }
+
+        if (activePlayer != null)
+        {
+            ActionMenu.instance.ShowMenu();
+        }
+
     }
 
     public void SelectCharacter(CharacterController cc)
