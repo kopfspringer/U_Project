@@ -127,6 +127,9 @@ public class CharacterController : MonoBehaviour
                     hpText.transform.LookAt(Camera.main.transform);
                     hpText.transform.Rotate(0f, 90f, 0f); 
                 }
+                hpText.transform.LookAt(Camera.main.transform);
+                // Rotate 90 degrees around the Y axis so the text aligns correctly
+                hpText.transform.Rotate(0f, 90f, 0f);
             }
         }
     }
