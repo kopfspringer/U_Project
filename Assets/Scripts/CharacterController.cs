@@ -125,11 +125,15 @@ public class CharacterController : MonoBehaviour
                 if (Camera.main != null)
                 {
                     hpText.transform.LookAt(Camera.main.transform);
-                    hpText.transform.Rotate(0f, 90f, 0f); 
+                    //hpText.transform.Rotate(0f, 90f, 0f); 
                 }
-                hpText.transform.LookAt(Camera.main.transform);
+                //hpText.transform.LookAt(Camera.main.transform);
                 // Rotate 90 degrees around the Y axis so the text aligns correctly
-                hpText.transform.Rotate(0f, 90f, 0f);
+                //hpText.transform.Rotate(0f, 90f, 0f);
+                Vector3 camPos = Camera.main.transform.position;
+                Vector3 dir = hpText.transform.position - camPos;
+               // hpText.transform.rotation = Quaternion.LookRotation(dir);
+                //hpText.transform.rotation *= Quaternion.Euler(0f, 90f, 0f);
             }
         }
     }
