@@ -39,6 +39,16 @@ public class GameManager : MonoBehaviour
         allChars.AddRange(playerTeam);
         allChars.AddRange(enemyTeam);
 
+        if (activePlayer == null && playerTeam.Count > 0)
+        {
+            activePlayer = playerTeam[0];
+        }
+
+        if (activePlayer != null)
+        {
+            ActionMenu.instance.ShowMenu();
+        }
+
     }
 
     // Update is called once per frame

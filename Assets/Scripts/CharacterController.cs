@@ -13,6 +13,8 @@ public class CharacterController : MonoBehaviour
 
     public bool isEnemy;
 
+    public int hitPoints = 100;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -34,10 +36,31 @@ public class CharacterController : MonoBehaviour
                 CameraController.instance.SetMoveTarget(transform.position);
             }
         }
+        else if (isMoving)
+        {
+            isMoving = false;
+
+            if (GameManager.instance.activePlayer == this)
+            {
+                ActionMenu.instance.ShowMenu();
+            }
+        }
     }
 
     public void MoveToPoint(Vector3 pointToMoveTo)
     {
         moveTarget = pointToMoveTo;
+        isMoving = true;
+        ActionMenu.instance.HideMenu();
+    }
+
+    public void TakeDamage(int amount)
+    {
+        hitPoints -= amount;
+
+        if (hitPoints < 0)
+        {
+            hitPoints = 0;
+        }
     }
 }
