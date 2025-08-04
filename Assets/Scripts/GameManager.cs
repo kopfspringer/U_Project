@@ -45,6 +45,7 @@ public class GameManager : MonoBehaviour
         if (allChars.Count > 0)
         {
             activePlayer = allChars[currentCharIndex];
+            CameraController.instance.SetMoveTarget(activePlayer.transform.position);
 
             if (activePlayer.isEnemy)
             {
@@ -87,6 +88,8 @@ public class GameManager : MonoBehaviour
         }
 
         activePlayer = allChars[currentCharIndex];
+
+        CameraController.instance.SetMoveTarget(activePlayer.transform.position);
 
         if (activePlayer.isEnemy)
         {
