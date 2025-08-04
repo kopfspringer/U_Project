@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     public List<CharacterController> playerTeam = new List<CharacterController>();
     public List<CharacterController> enemyTeam = new List<CharacterController>();
 
+    public int turnCounter = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -41,9 +43,8 @@ public class GameManager : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnPlayerMoveComplete()
     {
-
+        turnCounter++;
     }
 }
