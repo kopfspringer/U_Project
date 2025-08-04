@@ -30,7 +30,18 @@ public class CharacterController : MonoBehaviour
         hpText.alignment = TextAlignmentOptions.Center;
         hpText.fontSize = 3f;
         hpText.color = Color.red;
-        hpText.font = TMP_Settings.defaultFontAsset;
+
+        // Assign a valid font asset so the HP value renders instead of the TMP placeholder
+        TMP_FontAsset fontAsset = TMP_Settings.defaultFontAsset;
+        if (fontAsset == null)
+        {
+            fontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+        }
+        if (fontAsset != null)
+        {
+            hpText.font = fontAsset;
+        }
+
         hpText.text = hitPoints.ToString();
     }
 
