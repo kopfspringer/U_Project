@@ -111,16 +111,46 @@ public class ActionMenu : MonoBehaviour
 
     private void Rest()
     {
+        CharacterController player = GameManager.instance.activePlayer;
+        if (player != null && !player.isEnemy)
+        {
+            int healAmount = 30;
+            player.Heal(healAmount);
+            Debug.Log($"Player {player.name} rests and recovers {healAmount} HP. HP now: {player.hitPoints}");
+        }
+
         CompletePlayerAction();
     }
 
     private void CastFire()
     {
+        if (GameManager.instance.enemyTeam.Count > 0)
+        {
+            CharacterController enemy = GameManager.instance.enemyTeam[0];
+            int damage = Random.Range(15, 31);
+            enemy.TakeDamage(damage);
+            Debug.Log($"Enemy {enemy.name} takes {damage} fire damage. HP left: {enemy.hitPoints}");
+        }
+
+        fireButton.gameObject.SetActive(false);
+        rainButton.gameObject.SetActive(false);
+
         CompletePlayerAction();
     }
 
     private void CastRain()
     {
+        if (GameManager.instance.enemyTeam.Count > 0)
+        {
+            CharacterController enemy = GameManager.instance.enemyTeam[0];
+            int damage = Random.Range(12, 36);
+            enemy.TakeDamage(damage);
+            Debug.Log($"Enemy {enemy.name} takes {damage} rain damage. HP left: {enemy.hitPoints}");
+        }
+
+        fireButton.gameObject.SetActive(false);
+        rainButton.gameObject.SetActive(false);
+
         CompletePlayerAction();
     }
 
