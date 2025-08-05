@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
             activePlayer = playerTeam[0];
         }
 
-        if (activePlayer != null)
+        if (activePlayer != null && !activePlayer.isEnemy)
         {
             ActionMenu.instance.ShowMenu();
         }
@@ -108,6 +108,7 @@ public class GameManager : MonoBehaviour
     public void EndTurn()
     {
         BattleMenu.instance?.Hide();
+        ActionMenu.instance.HideMenu();
 
         currentCharIndex++;
         if (currentCharIndex >= allChars.Count)
@@ -123,19 +124,26 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(EnemyTurn());
         }
+        else
+        {
+            ActionMenu.instance.ShowMenu();
+        }
     }
 
     private IEnumerator EnemyTurn()
     {
         yield return new WaitForSeconds(0.5f);
 
-        List<MovePoint> possibleMoves = MoveGrid.instance.GetPointsInRange(activePlayer.transform.position, 5);
-
-        if (possibleMoves.Count > 0)
+        if (playerTeam.Count > 0)
         {
-            int index = Random.Range(0, possibleMoves.Count);
-            activePlayer.MoveToPoint(possibleMoves[index].transform.position);
+            CharacterController player = playerTeam[0];
+            int damage = Random.Range(10, 21);
+            player.TakeDamage(damage);
+            Debug.Log($"Player {player.name} takes {damage} damage. HP left: {player.hitPoints}");
         }
+
+        yield return new WaitForSeconds(0.5f);
+        EndTurn();
     }
     public void OnPlayerMoveComplete()
     {

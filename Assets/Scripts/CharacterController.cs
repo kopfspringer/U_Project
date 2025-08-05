@@ -161,10 +161,18 @@ public class CharacterController : MonoBehaviour
     public void TakeDamage(int amount)
     {
         hitPoints -= amount;
-
         if (hitPoints < 0)
         {
             hitPoints = 0;
+        }
+
+        if (hpText != null)
+        {
+            hpText.text = hitPoints.ToString();
+            if (Camera.main != null)
+            {
+                hpText.transform.LookAt(Camera.main.transform);
+            }
         }
     }
 }
