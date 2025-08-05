@@ -76,6 +76,12 @@ public class CharacterController : MonoBehaviour
         {
             GameManager.instance.OnPlayerMoveComplete();
             playerMovePending = false;
+            isMoving = false;
+
+            if (GameManager.instance.activePlayer == this)
+            {
+                ActionMenu.instance.ShowMenu();
+            }
         }
     }
 
@@ -118,33 +124,13 @@ public class CharacterController : MonoBehaviour
         if (newTarget != playerPos && step != Vector3.zero)
         {
             moveTarget = newTarget;
+
             if (hpText != null)
             {
-                hpText.text = hitPoints.ToString();
                 hpText.text = hitPoints.ToString();
                 if (Camera.main != null)
                 {
                     hpText.transform.LookAt(Camera.main.transform);
-                }
-                Vector3 camPos = Camera.main.transform.position;
-                Vector3 dir = hpText.transform.position - camPos;
-            }
-            else if (isMoving)
-            {
-                isMoving = false;
-
-                if (GameManager.instance.activePlayer == this)
-                {
-                    ActionMenu.instance.ShowMenu();
-                }
-                else if (isMoving)
-                {
-                    isMoving = false;
-
-                    if (GameManager.instance.activePlayer == this)
-                    {
-                        ActionMenu.instance.ShowMenu();
-                    }
                 }
             }
         }

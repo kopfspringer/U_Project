@@ -30,6 +30,16 @@ public class ActionMenu : MonoBehaviour
         {
             attackButton.onClick.AddListener(Attack);
         }
+
+        if (magicButton != null)
+        {
+            magicButton.onClick.AddListener(Magic);
+        }
+
+        if (restButton != null)
+        {
+            restButton.onClick.AddListener(Rest);
+        }
     }
 
     public void ShowMenu()
@@ -76,9 +86,27 @@ public class ActionMenu : MonoBehaviour
             Debug.Log($"Enemy {enemy.name} takes {damage} damage. HP left: {enemy.hitPoints}");
         }
 
+        CompletePlayerAction();
+    }
+
+    private void Magic()
+    {
+        CompletePlayerAction();
+    }
+
+    private void Rest()
+    {
+        CompletePlayerAction();
+    }
+
+    private void CompletePlayerAction()
+    {
         if (dropUpPanel != null)
         {
             dropUpPanel.SetActive(false);
         }
+
+        HideMenu();
+        GameManager.instance.EndTurn();
     }
 }
