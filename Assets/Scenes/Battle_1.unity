@@ -1206,6 +1206,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ActionMenu
   actionButton: {fileID: 1661148047}
   dropUpPanel: {fileID: 2000000000}
+  buttonPrefab: {fileID: 8144487759797271483, guid: 015c05fb756460c48abee3ee74fd9055, type: 3}
   attackButton: {fileID: 0}
   magicButton: {fileID: 0}
   restButton: {fileID: 0}
