@@ -156,11 +156,6 @@ public class ActionMenu : MonoBehaviour
 
     private void CompletePlayerAction()
     {
-        if (dropUpPanel != null)
-        {
-            dropUpPanel.SetActive(false);
-        }
-
         HideMenu();
         GameManager.instance.EndTurn();
     }

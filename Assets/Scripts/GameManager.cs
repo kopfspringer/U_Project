@@ -58,11 +58,7 @@ public class GameManager : MonoBehaviour
             activePlayer = playerTeam[0];
         }
 
-        if (activePlayer != null && !activePlayer.isEnemy)
-        {
-            ActionMenu.instance.ShowMenu();
-        }
-
+        // Allow action menu to appear only after the player finishes a move.
     }
 
     public void SelectCharacter(CharacterController cc)
@@ -124,10 +120,7 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(EnemyTurn());
         }
-        else
-        {
-            ActionMenu.instance.ShowMenu();
-        }
+        // The action menu will be displayed once the new active player finishes moving.
     }
 
     private IEnumerator EnemyTurn()
