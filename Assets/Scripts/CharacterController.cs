@@ -175,4 +175,22 @@ public class CharacterController : MonoBehaviour
             }
         }
     }
+
+    public void Heal(int amount)
+    {
+        hitPoints += amount;
+        if (hitPoints > 100)
+        {
+            hitPoints = 100;
+        }
+
+        if (hpText != null)
+        {
+            hpText.text = hitPoints.ToString();
+            if (Camera.main != null)
+            {
+                hpText.transform.LookAt(Camera.main.transform);
+            }
+        }
+    }
 }
