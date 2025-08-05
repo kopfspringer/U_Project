@@ -69,7 +69,7 @@ public class BattleMenu : MonoBehaviour
         GameObject textObj = new GameObject("Text");
         textObj.transform.SetParent(buttonObj.transform, false);
         Text txt = textObj.AddComponent<Text>();
-        txt.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         txt.text = text;
         txt.alignment = TextAnchor.MiddleCenter;
         txt.color = Color.black;
