@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class ActionMenu : MonoBehaviour
 {
@@ -9,11 +8,10 @@ public class ActionMenu : MonoBehaviour
     [Header("UI References")]
     public Button actionButton;
     public GameObject dropUpPanel;
-    public Button buttonPrefab;
 
-    private Button attackButton;
-    private Button magicButton;
-    private Button restButton;
+    [SerializeField] private Button attackButton;
+    [SerializeField] private Button magicButton;
+    [SerializeField] private Button restButton;
 
     private void Awake()
     {
@@ -29,11 +27,17 @@ public class ActionMenu : MonoBehaviour
             actionButton.onClick.AddListener(ToggleDropUp);
         }
 
-        if (dropUpPanel != null && buttonPrefab != null)
+        if (attackButton != null)
         {
-            attackButton = CreateMenuButton("Attack", Attack, 0);
-            magicButton = CreateMenuButton("Magic", Magic, 1);
-            restButton = CreateMenuButton("Rest", Rest, 2);
+            attackButton.onClick.AddListener(Attack);
+        }
+        if (magicButton != null)
+        {
+            magicButton.onClick.AddListener(Magic);
+        }
+        if (restButton != null)
+        {
+            restButton.onClick.AddListener(Rest);
         }
     }
 
@@ -103,25 +107,5 @@ public class ActionMenu : MonoBehaviour
 
         HideMenu();
         GameManager.instance.EndTurn();
-    }
-
-    private Button CreateMenuButton(string label, UnityEngine.Events.UnityAction action, int index)
-    {
-        Button btn = Instantiate(buttonPrefab, dropUpPanel.transform);
-        btn.onClick.AddListener(action);
-
-        TMP_Text text = btn.GetComponentInChildren<TMP_Text>();
-        if (text != null)
-        {
-            text.text = label;
-        }
-
-        RectTransform rect = btn.GetComponent<RectTransform>();
-        if (rect != null)
-        {
-            rect.anchoredPosition = new Vector2(0, -index * rect.sizeDelta.y);
-        }
-
-        return btn;
     }
 }
