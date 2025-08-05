@@ -13,6 +13,9 @@ public class ActionMenu : MonoBehaviour
     [SerializeField] private Button magicButton;
     [SerializeField] private Button restButton;
 
+    [SerializeField] private Button fireButton;
+    [SerializeField] private Button rainButton;
+
     private void Awake()
     {
         instance = this;
@@ -38,6 +41,17 @@ public class ActionMenu : MonoBehaviour
         if (restButton != null)
         {
             restButton.onClick.AddListener(Rest);
+        }
+
+        if (fireButton != null)
+        {
+            fireButton.gameObject.SetActive(false);
+            fireButton.onClick.AddListener(CastFire);
+        }
+        if (rainButton != null)
+        {
+            rainButton.gameObject.SetActive(false);
+            rainButton.onClick.AddListener(CastRain);
         }
     }
 
@@ -90,10 +104,27 @@ public class ActionMenu : MonoBehaviour
 
     private void Magic()
     {
-        CompletePlayerAction();
+        if (fireButton == null || rainButton == null)
+        {
+            return;
+        }
+
+        bool show = !fireButton.gameObject.activeSelf;
+        fireButton.gameObject.SetActive(show);
+        rainButton.gameObject.SetActive(show);
     }
 
     private void Rest()
+    {
+        CompletePlayerAction();
+    }
+
+    private void CastFire()
+    {
+        CompletePlayerAction();
+    }
+
+    private void CastRain()
     {
         CompletePlayerAction();
     }
