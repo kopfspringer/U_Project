@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using TMPro;
 
 public class CharacterController : MonoBehaviour
 {
@@ -15,36 +14,35 @@ public class CharacterController : MonoBehaviour
     public bool isEnemy;
 
     public int hitPoints = 100;
-    private TextMeshPro hpText;
     public Vector3 hpOffset = new Vector3(0f, 2f, 0f);
     private bool playerMovePending;
     private int lastTurnProcessed;
+    private bool isDead;
+
+    private Transform hpBarParent;
+    private Transform hpBarFill;
+    private float maxHpBarWidth = 1.5f;
+    private float hpBarHeight = 0.2f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         moveTarget = transform.position;
 
-        GameObject hpObj = new GameObject("HPDisplay");
-        hpObj.transform.SetParent(transform);
-        hpObj.transform.localPosition = hpOffset;
-        hpText = hpObj.AddComponent<TextMeshPro>();
-        hpText.alignment = TextAlignmentOptions.Center;
-        hpText.fontSize = 3f;
-        hpText.color = Color.red;
+        GameObject hpParentObj = new GameObject("HPBar");
+        hpParentObj.transform.SetParent(transform);
+        hpParentObj.transform.localPosition = hpOffset;
+        hpBarParent = hpParentObj.transform;
 
-        // Assign a valid font asset so the HP value renders instead of the TMP placeholder
-        TMP_FontAsset fontAsset = TMP_Settings.defaultFontAsset;
-        if (fontAsset == null)
-        {
-            fontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-        }
-        if (fontAsset != null)
-        {
-            hpText.font = fontAsset;
-        }
-
-        hpText.text = hitPoints.ToString();
+        GameObject hpFillObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        hpFillObj.name = "HPBarFill";
+        hpFillObj.transform.SetParent(hpBarParent);
+        hpFillObj.transform.localPosition = Vector3.zero;
+        hpFillObj.transform.localScale = new Vector3(maxHpBarWidth, hpBarHeight, 0.1f);
+        hpFillObj.GetComponent<Renderer>().material.color = Color.red;
+        Destroy(hpFillObj.GetComponent<Collider>());
+        hpBarFill = hpFillObj.transform;
+        UpdateHPBar();
         if (isEnemy)
         {
             lastTurnProcessed = GameManager.instance.turnCounter;
@@ -54,6 +52,11 @@ public class CharacterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isDead)
+        {
+            return;
+        }
+
         if (isEnemy && Vector3.Distance(transform.position, moveTarget) < 0.01f && lastTurnProcessed < GameManager.instance.turnCounter)
         {
             MoveTowardsPlayer();
@@ -82,6 +85,11 @@ public class CharacterController : MonoBehaviour
             {
                 ActionMenu.instance.ShowMenu();
             }
+        }
+
+        if (hpBarParent != null && Camera.main != null)
+        {
+            hpBarParent.LookAt(Camera.main.transform);
         }
     }
 
@@ -124,20 +132,16 @@ public class CharacterController : MonoBehaviour
         if (newTarget != playerPos && step != Vector3.zero)
         {
             moveTarget = newTarget;
-
-            if (hpText != null)
-            {
-                hpText.text = hitPoints.ToString();
-                if (Camera.main != null)
-                {
-                    hpText.transform.LookAt(Camera.main.transform);
-                }
-            }
         }
     }
 
     public void MoveToPoint(Vector3 pointToMoveTo)
     {
+        if (isDead)
+        {
+            return;
+        }
+
         moveTarget = pointToMoveTo;
         if (!isEnemy)
         {
@@ -148,6 +152,10 @@ public class CharacterController : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (isDead)
+        {
+            return;
+        }
         if (!isEnemy)
         {
             GameManager.instance.SelectCharacter(this);
@@ -165,14 +173,10 @@ public class CharacterController : MonoBehaviour
         {
             hitPoints = 0;
         }
-
-        if (hpText != null)
+        UpdateHPBar();
+        if (hitPoints == 0 && !isDead)
         {
-            hpText.text = hitPoints.ToString();
-            if (Camera.main != null)
-            {
-                hpText.transform.LookAt(Camera.main.transform);
-            }
+            Die();
         }
     }
 
@@ -183,14 +187,28 @@ public class CharacterController : MonoBehaviour
         {
             hitPoints = 100;
         }
+        UpdateHPBar();
+    }
 
-        if (hpText != null)
+    private void UpdateHPBar()
+    {
+        if (hpBarFill != null)
         {
-            hpText.text = hitPoints.ToString();
-            if (Camera.main != null)
-            {
-                hpText.transform.LookAt(Camera.main.transform);
-            }
+            float width = maxHpBarWidth * hitPoints / 100f;
+            hpBarFill.localScale = new Vector3(width, hpBarHeight, 0.1f);
+            hpBarFill.localPosition = new Vector3((width - maxHpBarWidth) / 2f, 0f, 0f);
         }
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        moveTarget = transform.position;
+        playerMovePending = false;
+        if (hpBarParent != null)
+        {
+            hpBarParent.gameObject.SetActive(false);
+        }
+        transform.rotation = Quaternion.Euler(90f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
     }
 }
