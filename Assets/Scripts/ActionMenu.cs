@@ -1,39 +1,58 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Verwaltet das Aktionsmenü des Spielers und die Auswahl der verfügbaren Aktionen.
+/// </summary>
 public class ActionMenu : MonoBehaviour
 {
+    /// <summary>Globale Referenz auf dieses Menü zur einfachen Nutzung.</summary>
     public static ActionMenu instance;
 
     [Header("UI References")]
+    /// <summary>Button, der das Aktionsmenü ein- oder ausblendet.</summary>
     public Button actionButton;
+    /// <summary>Panel, das nach oben aufklappt und die Aktionsbuttons enthält.</summary>
     public GameObject dropUpPanel;
 
-    [SerializeField] private Button attackButton;
-    [SerializeField] private Button magicButton;
-    [SerializeField] private Button restButton;
+    [SerializeField] private Button attackButton; // Button für normale Angriffe
+    [SerializeField] private Button magicButton;  // Button zum Anzeigen von Zaubern
+    [SerializeField] private Button restButton;   // Button zum Ausruhen
 
-    [SerializeField] private Button fireButton;
-    [SerializeField] private Button rainButton;
+    [SerializeField] private Button fireButton;   // Button für den Feuerzauber
+    [SerializeField] private Button rainButton;   // Button für den Regenzauber
 
+    /// <summary>Interner Zustand, welcher Angriff ausgeführt werden soll.</summary>
     private enum PendingAttack { None, Physical, Fire, Rain }
+    /// <summary>Aktuell ausgewählter, aber noch nicht ausgeführter Angriff.</summary>
     private PendingAttack pendingAttack = PendingAttack.None;
+    /// <summary>Reichweite des ausstehenden Angriffs.</summary>
     private int pendingRange;
 
+    /// <summary>
+    /// Initialisiert die Singleton-Instanz.
+    /// </summary>
     private void Awake()
     {
+        // Speichert die Instanz, damit andere Klassen leicht darauf zugreifen können.
         instance = this;
     }
 
+    /// <summary>
+    /// Registriert Event-Listener und versteckt das Menü zu Beginn.
+    /// </summary>
     void Start()
     {
+        // Das Menü wird zunächst unsichtbar.
         HideMenu();
 
+        // Listener für den Hauptbutton, der das Panel auf- und zuklappt.
         if (actionButton != null)
         {
             actionButton.onClick.AddListener(ToggleDropUp);
         }
 
+        // Listener für die verschiedenen Aktions-Buttons.
         if (attackButton != null)
         {
             attackButton.onClick.AddListener(Attack);
@@ -47,6 +66,7 @@ public class ActionMenu : MonoBehaviour
             restButton.onClick.AddListener(Rest);
         }
 
+        // Zusätzliche Zauber werden zunächst versteckt.
         if (fireButton != null)
         {
             fireButton.onClick.AddListener(CastFire);
@@ -59,13 +79,18 @@ public class ActionMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Macht den Hauptbutton sichtbar und aktualisiert den Zustand der Aktionsbuttons.
+    /// </summary>
     public void ShowMenu()
     {
+        // Hauptbutton einblenden.
         if (actionButton != null)
         {
             actionButton.gameObject.SetActive(true);
         }
 
+        // Panel zunächst geschlossen lassen.
         if (dropUpPanel != null)
         {
             dropUpPanel.SetActive(false);
@@ -74,6 +99,9 @@ public class ActionMenu : MonoBehaviour
         UpdateButtonStates();
     }
 
+    /// <summary>
+    /// Versteckt das gesamte Aktionsmenü.
+    /// </summary>
     public void HideMenu()
     {
         if (actionButton != null)
@@ -87,22 +115,31 @@ public class ActionMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Öffnet oder schließt das aufklappbare Panel.
+    /// </summary>
     private void ToggleDropUp()
     {
         if (dropUpPanel != null)
         {
+            // Sichtbarkeit umschalten.
             dropUpPanel.SetActive(!dropUpPanel.activeSelf);
             if (dropUpPanel.activeSelf)
             {
+                // Buttons nur aktualisieren, wenn das Panel sichtbar ist.
                 UpdateButtonStates();
             }
         }
     }
 
+    /// <summary>
+    /// Bereitet einen normalen Angriff vor und zeigt die Reichweite an.
+    /// </summary>
     private void Attack()
     {
         if (GameManager.instance.activePlayer != null)
         {
+            // Angriff vormerken und Reichweite festlegen.
             pendingAttack = PendingAttack.Physical;
             pendingRange = 2;
             MoveGrid.instance.ShowAttackRange(GameManager.instance.activePlayer.transform.position, pendingRange);
@@ -113,6 +150,9 @@ public class ActionMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Blendet die verfügbaren Zauber ein oder aus.
+    /// </summary>
     private void Magic()
     {
         bool show = !fireButton.gameObject.activeSelf;
@@ -124,6 +164,9 @@ public class ActionMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Führt die Ruhe-Aktion aus und heilt den Spieler.
+    /// </summary>
     private void Rest()
     {
         CharacterController player = GameManager.instance.activePlayer;
@@ -138,6 +181,9 @@ public class ActionMenu : MonoBehaviour
         CompletePlayerAction();
     }
 
+    /// <summary>
+    /// Bereitet den Feuerzauber vor und zeigt die Reichweite an.
+    /// </summary>
     private void CastFire()
     {
         if (GameManager.instance.activePlayer != null)
@@ -154,6 +200,9 @@ public class ActionMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Bereitet den Regenzauber vor und zeigt die Reichweite an.
+    /// </summary>
     private void CastRain()
     {
         if (GameManager.instance.activePlayer != null)
@@ -170,12 +219,20 @@ public class ActionMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Blendet das Menü aus und beendet den Zug des Spielers.
+    /// </summary>
     private void CompletePlayerAction()
     {
         HideMenu();
         GameManager.instance.EndTurn();
     }
 
+    /// <summary>
+    /// Versucht, einen vorbereiteten Angriff auf ein Ziel auszuführen.
+    /// </summary>
+    /// <param name="target">Das angegriffene Ziel.</param>
+    /// <returns>True, wenn ein Angriff ausgeführt wurde.</returns>
     public bool TryExecuteAttackOn(CharacterController target)
     {
         if (pendingAttack == PendingAttack.None || GameManager.instance.activePlayer == null)
@@ -187,6 +244,7 @@ public class ActionMenu : MonoBehaviour
         float distance = Vector3.Distance(player.transform.position, target.transform.position);
         if (distance > pendingRange || !target.isEnemy)
         {
+        // Außerhalb der Reichweite oder kein gültiges Ziel.
             return true;
         }
 
@@ -207,6 +265,7 @@ public class ActionMenu : MonoBehaviour
                 break;
         }
 
+        // Schaden anwenden und Angriffsmodus zurücksetzen.
         target.TakeDamage(damage);
         MoveGrid.instance.HideMovePoints();
         pendingAttack = PendingAttack.None;
@@ -214,6 +273,9 @@ public class ActionMenu : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Aktiviert oder deaktiviert die Aktionsbuttons abhängig vom Spielzustand.
+    /// </summary>
     private void UpdateButtonStates()
     {
         if (attackButton == null || fireButton == null || rainButton == null)
@@ -232,13 +294,8 @@ public class ActionMenu : MonoBehaviour
             return;
         }
 
-        // Always allow the action buttons to be interacted with if both
-        // a player and an enemy exist.  The actual range validation is
-        // handled when the player attempts to execute the attack in
-        // TryExecuteAttackOn.  Previously these buttons were disabled when
-        // the enemy was out of range, which prevented the player from
-        // selecting an attack at all.  This change keeps them enabled so the
-        // player can choose an attack even if the enemy is far away.
+        // Buttons werden aktiv gelassen, damit der Spieler Angriffe auswählen kann,
+        // auch wenn das Ziel möglicherweise zu weit entfernt ist.
         attackButton.interactable = true;
         fireButton.interactable = true;
         rainButton.interactable = true;

@@ -1,28 +1,43 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Erstellt und verwaltet das Kampfmenü, über das der Spieler Aktionen auswählt.
+/// </summary>
 public class BattleMenu : MonoBehaviour
 {
+    /// <summary>Singleton-Instanz des Kampfmenüs.</summary>
     public static BattleMenu instance;
 
     [Header("Menu Elements")]
+    /// <summary>Wurzelobjekt, das alle UI-Elemente des Menüs enthält.</summary>
     public GameObject menuRoot;
+    /// <summary>Button für Angriffe.</summary>
     public Button attackButton;
+    /// <summary>Button für Magie.</summary>
     public Button magicButton;
+    /// <summary>Button für Gegenstände.</summary>
     public Button itemsButton;
+    /// <summary>Button zum Beenden des Zuges.</summary>
     public Button waitButton;
 
+    /// <summary>
+    /// Initialisiert das Menü und registriert die Events.
+    /// </summary>
     private void Awake()
     {
         instance = this;
 
+        // Falls kein Menü im Editor zugewiesen wurde, wird eines zur Laufzeit erzeugt.
         if (menuRoot == null)
         {
             CreateMenu();
         }
 
+        // Menü ist zu Beginn unsichtbar.
         Hide();
 
+        // "Warten"-Button beendet den Zug sofort.
         if (waitButton != null)
         {
             waitButton.onClick.AddListener(() =>
@@ -33,6 +48,9 @@ public class BattleMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Erstellt das Menü dynamisch im Canvas.
+    /// </summary>
     private void CreateMenu()
     {
         Canvas canvas = new GameObject("BattleMenuCanvas").AddComponent<Canvas>();
@@ -50,12 +68,16 @@ public class BattleMenu : MonoBehaviour
         layout.childAlignment = TextAnchor.MiddleCenter;
         layout.spacing = 10f;
 
+        // Buttons erzeugen und zuweisen.
         attackButton = CreateButton(panel.transform, "Attack");
         magicButton = CreateButton(panel.transform, "Magic");
         itemsButton = CreateButton(panel.transform, "Items");
         waitButton = CreateButton(panel.transform, "Wait");
     }
 
+    /// <summary>
+    /// Hilfsmethode zum Erstellen eines Buttons mit Text.
+    /// </summary>
     private Button CreateButton(Transform parent, string text)
     {
         GameObject buttonObj = new GameObject(text + "Button");
@@ -86,6 +108,9 @@ public class BattleMenu : MonoBehaviour
         return button;
     }
 
+    /// <summary>
+    /// Zeigt das Menü an.
+    /// </summary>
     public void Show()
     {
         if (menuRoot != null)
@@ -94,6 +119,9 @@ public class BattleMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Versteckt das Menü.
+    /// </summary>
     public void Hide()
     {
         if (menuRoot != null)
