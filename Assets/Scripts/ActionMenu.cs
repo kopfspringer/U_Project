@@ -133,7 +133,8 @@ public class ActionMenu : MonoBehaviour
             player.Heal(healAmount);
             Debug.Log($"Player {player.name} rests and recovers {healAmount} HP. HP now: {player.hitPoints}");
         }
-
+        MoveGrid.instance.HideMovePoints();
+        pendingAttack = PendingAttack.None;
         CompletePlayerAction();
     }
 
@@ -186,9 +187,7 @@ public class ActionMenu : MonoBehaviour
         float distance = Vector3.Distance(player.transform.position, target.transform.position);
         if (distance > pendingRange || !target.isEnemy)
         {
-            MoveGrid.instance.HideMovePoints();
-            pendingAttack = PendingAttack.None;
-            return false;
+            return true;
         }
 
         int damage = 0;
