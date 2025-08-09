@@ -67,6 +67,7 @@ public class MoveGrid : MonoBehaviour
         foreach (MovePoint movePoint in allMovePoints)
         {
             movePoint.gameObject.SetActive(false);
+            movePoint.ResetColor();
         }
     }
 
@@ -94,6 +95,19 @@ public class MoveGrid : MonoBehaviour
         foreach (MovePoint movePoint in pointsToShow)
         {
             movePoint.gameObject.SetActive(true);
+        }
+    }
+
+    public void ShowAttackRange(Vector3 center, int range)
+    {
+        HideMovePoints();
+
+        List<MovePoint> pointsToShow = GetPointsInRange(center, range);
+
+        foreach (MovePoint movePoint in pointsToShow)
+        {
+            movePoint.gameObject.SetActive(true);
+            movePoint.SetColor(Color.red);
         }
     }
 }
