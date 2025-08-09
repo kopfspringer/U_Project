@@ -68,6 +68,9 @@ public class MoveGrid : MonoBehaviour
         {
             movePoint.gameObject.SetActive(false);
             movePoint.ResetColor();
+            // Ensure move points are clickable again the next time they are
+            // shown for movement.
+            movePoint.SetClickable(true);
         }
     }
 
@@ -95,6 +98,7 @@ public class MoveGrid : MonoBehaviour
         foreach (MovePoint movePoint in pointsToShow)
         {
             movePoint.gameObject.SetActive(true);
+            movePoint.SetClickable(true);
         }
     }
 
@@ -108,6 +112,9 @@ public class MoveGrid : MonoBehaviour
         {
             movePoint.gameObject.SetActive(true);
             movePoint.SetColor(Color.red);
+            // Disable clicking on attack range hexagons; only enemies should
+            // be clickable when an attack is pending.
+            movePoint.SetClickable(false);
         }
     }
 }

@@ -233,14 +233,15 @@ public class ActionMenu : MonoBehaviour
             return;
         }
 
-        CharacterController player = GameManager.instance.activePlayer;
-        CharacterController enemy = GameManager.instance.enemyTeam[0];
-
-        float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
-
-        attackButton.interactable = distance <= 2f;
-        bool magicInRange = distance <= 4f;
-        fireButton.interactable = magicInRange;
-        rainButton.interactable = magicInRange;
+        // Always allow the action buttons to be interacted with if both
+        // a player and an enemy exist.  The actual range validation is
+        // handled when the player attempts to execute the attack in
+        // TryExecuteAttackOn.  Previously these buttons were disabled when
+        // the enemy was out of range, which prevented the player from
+        // selecting an attack at all.  This change keeps them enabled so the
+        // player can choose an attack even if the enemy is far away.
+        attackButton.interactable = true;
+        fireButton.interactable = true;
+        rainButton.interactable = true;
     }
 }
