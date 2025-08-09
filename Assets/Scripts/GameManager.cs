@@ -137,9 +137,21 @@ public class GameManager : MonoBehaviour
         if (playerTeam.Count > 0)
         {
             CharacterController player = playerTeam[0];
-            int damage = Random.Range(10, 21);
-            player.TakeDamage(damage);
-            Debug.Log($"Player {player.name} takes {damage} damage. HP left: {player.hitPoints}");
+            CharacterController enemy = activePlayer;
+            if (enemy != null)
+            {
+                float distance = Vector3.Distance(enemy.transform.position, player.transform.position);
+                if (distance <= 2f)
+                {
+                    int damage = Random.Range(10, 21);
+                    player.TakeDamage(damage);
+                    Debug.Log($"Player {player.name} takes {damage} damage. HP left: {player.hitPoints}");
+                }
+                else
+                {
+                    Debug.Log("Player is too far away to be attacked.");
+                }
+            }
         }
 
         yield return new WaitForSeconds(0.5f);
