@@ -1,8 +1,8 @@
 <!-- UNITY CODE ASSIST INSTRUCTIONS START -->
 - Project name: U_Project
-- Unity version: Unity 6000.2.0b11
+- Unity version: Unity 6000.2.0b13
 - Active game object:
-  - Name: actionButton
+  - Name: Enemy
   - Tag: Untagged
-  - Layer: UI
+  - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
