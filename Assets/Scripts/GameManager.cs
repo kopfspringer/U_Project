@@ -106,6 +106,13 @@ public class GameManager : MonoBehaviour
         BattleMenu.instance?.Hide();
         ActionMenu.instance.HideMenu();
 
+        bool playerFinishedTurn = !activePlayer.isEnemy;
+
+        if (playerFinishedTurn)
+        {
+            turnCounter++;
+        }
+
         currentCharIndex++;
         if (currentCharIndex >= allChars.Count)
         {
@@ -137,9 +144,5 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
         EndTurn();
-    }
-    public void OnPlayerMoveComplete()
-    {
-        turnCounter++;
     }
 }

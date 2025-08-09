@@ -77,7 +77,6 @@ public class CharacterController : MonoBehaviour
 
         if (!isEnemy && playerMovePending && Vector3.Distance(transform.position, moveTarget) < 0.01f)
         {
-            GameManager.instance.OnPlayerMoveComplete();
             playerMovePending = false;
             isMoving = false;
 
