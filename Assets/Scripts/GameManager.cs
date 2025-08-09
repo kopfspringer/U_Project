@@ -2,25 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Zentrale Steuerung des Spiels: verwaltet Züge, Teams und den aktiven Spieler.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
+    /// <summary>Singleton-Instanz des GameManagers.</summary>
     public static GameManager instance;
 
     private void Awake()
     {
+        // Instanz setzen, um einfachen Zugriff zu ermöglichen.
         instance = this;
     }
 
+    /// <summary>Der Charakter, der aktuell am Zug ist.</summary>
     public CharacterController activePlayer;
 
+    /// <summary>Liste aller Charaktere im Spiel.</summary>
     public List<CharacterController> allChars = new List<CharacterController>();
+    /// <summary>Liste der Spielercharaktere.</summary>
     public List<CharacterController> playerTeam = new List<CharacterController>();
+    /// <summary>Liste der Gegner.</summary>
     public List<CharacterController> enemyTeam = new List<CharacterController>();
 
+    /// <summary>Zähler der bisherigen Züge des Spielers.</summary>
     public int turnCounter = 0;
+    /// <summary>Index des aktuell aktiven Charakters.</summary>
     private int currentCharIndex;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    /// <summary>
+    /// Sucht alle Charaktere, ordnet sie Teams zu und startet den ersten Zug.
+    /// </summary>
     void Start()
     {
         allChars.AddRange(FindObjectsByType<CharacterController>(FindObjectsSortMode.None));
@@ -58,9 +71,12 @@ public class GameManager : MonoBehaviour
             activePlayer = playerTeam[0];
         }
 
-        // Allow action menu to appear only after the player finishes a move.
+        // Das Aktionsmenü erscheint erst, wenn der Spieler seine Bewegung beendet hat.
     }
 
+    /// <summary>
+    /// Wählt einen Charakter aus und zeigt seine Bewegungsreichweite an.
+    /// </summary>
     public void SelectCharacter(CharacterController cc)
     {
         if (cc == activePlayer && !cc.isEnemy)
@@ -69,6 +85,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Bewegt den aktiven Spieler zu einem Zielpunkt.
+    /// </summary>
     public void MoveActivePlayerToPoint(Vector3 point)
     {
         if (activePlayer != null && !activePlayer.isEnemy)
@@ -78,6 +97,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Wird aufgerufen, wenn ein Charakter seine Bewegung abgeschlossen hat.
+    /// </summary>
     public void CharacterFinishedMove(CharacterController cc)
     {
         if (cc == activePlayer)
@@ -92,7 +114,7 @@ public class GameManager : MonoBehaviour
                 {
                     EndTurn();
                 }
-               
+
             }
             else
             {
@@ -101,6 +123,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Beendet den aktuellen Zug und wählt den nächsten Charakter aus.
+    /// </summary>
     public void EndTurn()
     {
         BattleMenu.instance?.Hide();
@@ -127,9 +152,12 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(EnemyTurn());
         }
-        // The action menu will be displayed once the new active player finishes moving.
+        // Das Aktionsmenü wird angezeigt, sobald der neue aktive Spieler sein Ziel erreicht hat.
     }
 
+    /// <summary>
+    /// Führt den Zug eines Gegners aus.
+    /// </summary>
     private IEnumerator EnemyTurn()
     {
         yield return new WaitForSeconds(0.5f);
