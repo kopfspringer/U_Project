@@ -16,6 +16,10 @@ public class ActionMenu : MonoBehaviour
     [SerializeField] private Button fireButton;
     [SerializeField] private Button rainButton;
 
+    private enum PendingAttack { None, Physical, Fire, Rain }
+    private PendingAttack pendingAttack = PendingAttack.None;
+    private int pendingRange;
+
     private void Awake()
     {
         instance = this;
@@ -97,20 +101,14 @@ public class ActionMenu : MonoBehaviour
 
     private void Attack()
     {
-        if (GameManager.instance.enemyTeam.Count > 0 && GameManager.instance.activePlayer != null)
+        if (GameManager.instance.activePlayer != null)
         {
-            CharacterController enemy = GameManager.instance.enemyTeam[0];
-            float distance = Vector3.Distance(GameManager.instance.activePlayer.transform.position, enemy.transform.position);
-            if (distance <= 2f)
+            pendingAttack = PendingAttack.Physical;
+            pendingRange = 2;
+            MoveGrid.instance.ShowAttackRange(GameManager.instance.activePlayer.transform.position, pendingRange);
+            if (dropUpPanel != null)
             {
-                int damage = Random.Range(10, 21);
-                enemy.TakeDamage(damage);
-                Debug.Log($"Enemy {enemy.name} takes {damage} damage. HP left: {enemy.hitPoints}");
-                CompletePlayerAction();
-            }
-            else
-            {
-                Debug.Log("Enemy is too far to attack.");
+                dropUpPanel.SetActive(false);
             }
         }
     }
@@ -141,44 +139,32 @@ public class ActionMenu : MonoBehaviour
 
     private void CastFire()
     {
-        if (GameManager.instance.enemyTeam.Count > 0 && GameManager.instance.activePlayer != null)
+        if (GameManager.instance.activePlayer != null)
         {
-            CharacterController enemy = GameManager.instance.enemyTeam[0];
-            float distance = Vector3.Distance(GameManager.instance.activePlayer.transform.position, enemy.transform.position);
-            if (distance <= 4f)
+            pendingAttack = PendingAttack.Fire;
+            pendingRange = 4;
+            MoveGrid.instance.ShowAttackRange(GameManager.instance.activePlayer.transform.position, pendingRange);
+            fireButton.gameObject.SetActive(false);
+            rainButton.gameObject.SetActive(false);
+            if (dropUpPanel != null)
             {
-                int damage = Random.Range(15, 31);
-                enemy.TakeDamage(damage);
-                Debug.Log($"Enemy {enemy.name} takes {damage} fire damage. HP left: {enemy.hitPoints}");
-                fireButton.gameObject.SetActive(false);
-                rainButton.gameObject.SetActive(false);
-                CompletePlayerAction();
-            }
-            else
-            {
-                Debug.Log("Enemy is too far to cast Fire.");
+                dropUpPanel.SetActive(false);
             }
         }
     }
 
     private void CastRain()
     {
-        if (GameManager.instance.enemyTeam.Count > 0 && GameManager.instance.activePlayer != null)
+        if (GameManager.instance.activePlayer != null)
         {
-            CharacterController enemy = GameManager.instance.enemyTeam[0];
-            float distance = Vector3.Distance(GameManager.instance.activePlayer.transform.position, enemy.transform.position);
-            if (distance <= 4f)
+            pendingAttack = PendingAttack.Rain;
+            pendingRange = 4;
+            MoveGrid.instance.ShowAttackRange(GameManager.instance.activePlayer.transform.position, pendingRange);
+            fireButton.gameObject.SetActive(false);
+            rainButton.gameObject.SetActive(false);
+            if (dropUpPanel != null)
             {
-                int damage = Random.Range(12, 36);
-                enemy.TakeDamage(damage);
-                Debug.Log($"Enemy {enemy.name} takes {damage} rain damage. HP left: {enemy.hitPoints}");
-                fireButton.gameObject.SetActive(false);
-                rainButton.gameObject.SetActive(false);
-                CompletePlayerAction();
-            }
-            else
-            {
-                Debug.Log("Enemy is too far to cast Rain.");
+                dropUpPanel.SetActive(false);
             }
         }
     }
@@ -187,6 +173,46 @@ public class ActionMenu : MonoBehaviour
     {
         HideMenu();
         GameManager.instance.EndTurn();
+    }
+
+    public bool TryExecuteAttackOn(CharacterController target)
+    {
+        if (pendingAttack == PendingAttack.None || GameManager.instance.activePlayer == null)
+        {
+            return false;
+        }
+
+        CharacterController player = GameManager.instance.activePlayer;
+        float distance = Vector3.Distance(player.transform.position, target.transform.position);
+        if (distance > pendingRange || !target.isEnemy)
+        {
+            MoveGrid.instance.HideMovePoints();
+            pendingAttack = PendingAttack.None;
+            return false;
+        }
+
+        int damage = 0;
+        switch (pendingAttack)
+        {
+            case PendingAttack.Physical:
+                damage = Random.Range(10, 21);
+                Debug.Log($"Enemy {target.name} takes {damage} damage. HP left: {target.hitPoints - damage}");
+                break;
+            case PendingAttack.Fire:
+                damage = Random.Range(15, 31);
+                Debug.Log($"Enemy {target.name} takes {damage} fire damage. HP left: {target.hitPoints - damage}");
+                break;
+            case PendingAttack.Rain:
+                damage = Random.Range(12, 36);
+                Debug.Log($"Enemy {target.name} takes {damage} rain damage. HP left: {target.hitPoints - damage}");
+                break;
+        }
+
+        target.TakeDamage(damage);
+        MoveGrid.instance.HideMovePoints();
+        pendingAttack = PendingAttack.None;
+        CompletePlayerAction();
+        return true;
     }
 
     private void UpdateButtonStates()

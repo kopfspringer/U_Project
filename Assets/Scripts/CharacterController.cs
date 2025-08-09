@@ -155,14 +155,16 @@ public class CharacterController : MonoBehaviour
         {
             return;
         }
+        if (ActionMenu.instance != null && ActionMenu.instance.TryExecuteAttackOn(this))
+        {
+            return;
+        }
         if (!isEnemy)
         {
             GameManager.instance.SelectCharacter(this);
             isMoving = true;
             ActionMenu.instance.HideMenu();
         }
-        isMoving = true;
-        ActionMenu.instance.HideMenu();
     }
 
     public void TakeDamage(int amount)
